@@ -1,6 +1,7 @@
 import sys
 from player import Player
 from existingRooms import room
+from existingItems import item
 
 
 
@@ -34,15 +35,22 @@ room['treasure'].s_to = room['narrow']
 # If the user enters "q", quit the game.
 
 
-print("The Adventure Game")
+print("The Adventure Game\n")
 
-player = Player("April")
-player.location()
+player = Player("April", inventory=[item['food']]) 
+player.playerInventory()
 choice = None
 
 
+# display currently player's location and what is in the room
+player.location()
+player.current_room.roomItems(player)
+
+
+
 while not choice == 'q':
-    choice = input("Please choose [n], [s], [w], [e] or [q] to Quit : ")
+    choice = input("\nPlease go [n], [s], [w], [e] or [q] to Quit \nOr take/get or drop item: ").strip()
+    # one word for parser
     if len(choice.split()) == 1:
         firstChoice  = choice[0]
         if firstChoice == 'n'or firstChoice == 's' or firstChoice == 'w' or firstChoice == 'e':
@@ -50,11 +58,35 @@ while not choice == 'q':
             player.roomChange(dir)
 
         elif firstChoice == 'q':
-            print("End of Game")
+            print("\nEnd of Game")
             sys.exit(1)
 
         else:
             print("Invalid Command")
+
+    # two word for parser
+
+    elif len(choice.split()) == 2:
+        choice = choice.split()
+
+        # takes first letter of a verb
+        verb = choice[0][0]
+        # takes item which is the second word
+        noun = choice[1]
+
+        # get or take
+        if verb == 'g' or 't':
+            player.takeItem(noun)
+            print(f"Inventory List: {player.playerInventory()}")
+ 
+
+        # drop
+        elif verb == 'd':
+            player.dropItem(noun)
+
+        else: 
+            print("Invalid Command")
+            
 
     else: 
         print ("Invalid Command")
