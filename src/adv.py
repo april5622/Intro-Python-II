@@ -35,24 +35,22 @@ room['treasure'].s_to = room['narrow']
 # If the user enters "q", quit the game.
 
 
-print("The Adventure Game\n")
+print("\nThe Adventure Game\n")
 
-player = Player("April", inventory=[item['food']]) 
-player.playerInventory()
+player = Player("April") 
 choice = None
-
 
 # display currently player's location and what is in the room
 player.location()
 player.current_room.roomItems(player)
-
+player.playerInventory()
 
 
 while not choice == 'q':
     choice = input("\nPlease go [n], [s], [w], [e] or [q] to Quit \nOr take/get or drop item: ").strip()
     # one word for parser
     if len(choice.split()) == 1:
-        firstChoice  = choice[0]
+        firstChoice = choice[0]
         if firstChoice == 'n'or firstChoice == 's' or firstChoice == 'w' or firstChoice == 'e':
             dir = firstChoice
             player.roomChange(dir)
@@ -75,14 +73,14 @@ while not choice == 'q':
         noun = choice[1]
 
         # get or take
-        if verb == 'g' or 't':
+        if verb == 'get' or 'take':
             player.takeItem(noun)
-            print(f"Inventory List: {player.playerInventory()}")
+            player.playerInventory()
  
-
         # drop
-        elif verb == 'd':
+        elif verb == 'drop':
             player.dropItem(noun)
+            player.playerInventory()
 
         else: 
             print("Invalid Command")

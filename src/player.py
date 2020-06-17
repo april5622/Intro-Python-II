@@ -4,19 +4,16 @@
 from existingRooms import room
 
 class Player:
-    def __init__(self, name, current_room = room["outside"], inventory=[]):
+    def __init__(self, name, current_room = room["outside"], inventory = []):
         self.name = name
         self.current_room = current_room
         self.inventory = inventory
 
     def playerInventory(self):
-        if len(self.inventory) > 1:
-            count = 0
-            for i in self.inventory:
-                count += 1
-                print(f'item {count}: {i}')
-        else: 
+        if len(self.inventory) < 1:
             print("Inventory Empty")
+        for i in self.inventory:
+            print(f"Inventory List: {i}")
     
     # Player taking an item in the room
     def takeItem(self, item):
@@ -36,53 +33,40 @@ class Player:
             print("Item is not in this room\n")
 
     # Player dropping an item in the room     
-    def dropItem(self, item):
-        stuff: None
+    def dropItem(self, item):      
+        stuff = None  
 
-        for i in self.inventory:
+        for i in self.inventory.items:
             if i.name == item:
                 stuff = i
 
-        if stuff:
-            stuff.on_drop(stuff)
-            self.inventory.remove(stuff)
-            self.current_room.items.append(stuff)
-            self.current_room.playerInventory(self)
+            if stuff:
+                self.inventory.remove(stuff)
+                stuff.on_drop(stuff)
+                self.current_room.items.append(stuff)
+                # self.current_room.roomItems(self)
+                # self.playerInventory()
 
-            self.playerInventory()
     
     # Current location
     def location(self):
         print(f"I am currently in {self.current_room.name}")
 
-    # Displaying the player's currently location 
+    # Displaying the player's current location 
     def travelInfo(self, dir):
         print(f"\nYou are heading {dir} and will arrive at the {self.current_room.name}: {self.current_room.description}")
 
     # When picking a choice and going into a new room
-    def roomChange(self, direction):
+    def roomChange(self, direction): 
         theWay = f"{direction}_to"
-        
-        # go = {
-        #     'n': "north",
-        #     's': "south",
-        #     'w': "west",
-        #     "e": "east"
-        # }
 
-        # direction = go
-
-        if getattr(self.current_room, theWay, False):
-            newRoom = getattr(self.current_room, theWay, False)
+        if getattr(self.current_room, theWay):
+            newRoom = getattr(self.current_room, theWay)
             self.current_room = newRoom
             self.travelInfo(direction)
             self.current_room.roomItems(self)
         else:
             print("Cannot go that way.")
-
-    def traveling(self, marker):
-        self.current_room = room[marker]
-        self.location()
             
     def __str__(self):
         return f"{self.name} is in this {self.current_room} by going {self.roomChange}"

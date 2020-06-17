@@ -13,4 +13,4 @@ class Item:
 
 
     def __str__(self):
-        return f'\nItem is {self.name}: {self.description}'
+        return f'\n{self.name}: {self.description}'
