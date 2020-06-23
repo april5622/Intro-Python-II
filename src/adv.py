@@ -1,25 +1,9 @@
-from room import Room
+import sys
+from player import Player
+from existingRooms import room
+from existingItems import item
 
-# Declare all the rooms
 
-room = {
-    'outside':  Room("Outside Cave Entrance",
-                     "North of you, the cave mount beckons"),
-
-    'foyer':    Room("Foyer", """Dim light filters in from the south. Dusty
-passages run north and east."""),
-
-    'overlook': Room("Grand Overlook", """A steep cliff appears before you, falling
-into the darkness. Ahead to the north, a light flickers in
-the distance, but there is no way across the chasm."""),
-
-    'narrow':   Room("Narrow Passage", """The narrow passage bends here from west
-to north. The smell of gold permeates the air."""),
-
-    'treasure': Room("Treasure Chamber", """You've found the long-lost treasure
-chamber! Sadly, it has already been completely emptied by
-earlier adventurers. The only exit is to the south."""),
-}
 
 
 # Link rooms together
@@ -49,3 +33,62 @@ room['treasure'].s_to = room['narrow']
 # Print an error message if the movement isn't allowed.
 #
 # If the user enters "q", quit the game.
+
+
+print("\nThe Adventure Game\n")
+
+player = Player("April") 
+choice = None
+
+# display currently player's location and what is in the room
+player.location()
+player.current_room.roomItems(player)
+player.playerInventory()
+
+
+while not choice == 'q':
+    choice = input("\nPlease go [n], [s], [w], [e] or [q] to Quit \nOr take/get or drop item: ").strip()
+    # one word for parser
+    if len(choice.split()) == 1:
+        firstChoice = choice[0]
+        if firstChoice == 'n'or firstChoice == 's' or firstChoice == 'w' or firstChoice == 'e':
+            dir = firstChoice
+            player.roomChange(dir)
+
+        elif firstChoice == 'q':
+            print("\nEnd of Game")
+            sys.exit(1)
+
+        else:
+            print("Invalid Command")
+
+    # two word for parser
+
+    elif len(choice.split()) == 2:
+        choice = choice.split()
+
+        # takes first letter of a verb
+        verb = choice[0][0]
+        # takes item which is the second word
+        noun = choice[1]
+
+        # get or take
+        if verb == 'get' or 'take':
+            player.takeItem(noun)
+            player.playerInventory()
+ 
+        # drop
+        elif verb == 'drop':
+            player.dropItem(noun)
+            player.playerInventory()
+
+        else: 
+            print("Invalid Command")
+            
+
+    else: 
+        print ("Invalid Command")
+
+
+
+        
